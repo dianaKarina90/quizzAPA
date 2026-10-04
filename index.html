@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Práctica básica de citas APA (nivel básico)</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f4ef;--card:#fff;--text:#1f2430;--muted:#667;--accent:#2f5d8a;--ok:#2e7d32;--bad:#c62828;--line:#dcd8cf}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181e;--card:#1e222b;--text:#e8e8ea;--muted:#9aa;--accent:#7fb0e0;--ok:#66bb6a;--bad:#ef5350;--line:#323845}}
+:root[data-theme="dark"]{--bg:#15181e;--card:#1e222b;--text:#e8e8ea;--muted:#9aa;--accent:#7fb0e0;--ok:#66bb6a;--bad:#ef5350;--line:#323845}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:14px}
+h1{font-size:1.5rem;margin:0 0 4px}
+p.sub{color:var(--muted);margin:0}
+input[type=text]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:1rem;background:var(--bg);color:var(--text)}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:12px 18px;background:var(--accent);color:#fff;font-weight:600}
+button:disabled{opacity:.4;cursor:not-allowed}
+.opt{display:block;width:100%;text-align:left;margin-top:10px;padding:12px 14px;background:var(--bg);color:var(--text);border:1px solid var(--line);font-weight:400}
+.opt.sel{border-color:var(--accent);outline:2px solid var(--accent)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar div{height:100%;background:var(--accent);transition:width .3s}
+.q{font-weight:600;margin:14px 0 4px}
+.score{font-size:3rem;font-weight:700;color:var(--accent);margin:6px 0}
+.rev{border-top:1px solid var(--line);padding-top:12px;margin-top:12px;font-size:.95rem}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.hidden{display:none}
+.note{font-size:.85rem;color:var(--muted);margin-top:12px}
+</style>
+</head>
+<body>
+<main>
+<h1>Práctica de citas APA</h1>
+<p class="sub">Nivel básico · 10 preguntas · Un solo intento</p>
+<div id="app"></div>
+</main>
+<script>
+const Q=[
+{q:"¿Cuál es la forma correcta de citar entre paréntesis a un autor (García) en una obra de 2020?",o:["(García 2020)","(García, 2020)","(2020, García)","(García: 2020)"],a:1,e:"Se escribe apellido, coma y año: (García, 2020)."},
+{q:"¿Cómo se cita entre paréntesis una obra de dos autores, López y Ruiz (2019)?",o:["(López, Ruiz, 2019)","(López et al., 2019)","(López y Ruiz, 2019)","(López / Ruiz, 2019)"],a:2,e:"Con dos autores se unen con “y” (en inglés, &): (López y Ruiz, 2019)."},
+{q:"¿Cómo se cita una obra de tres o más autores (Pérez, Gómez y Torres, 2021)?",o:["(Pérez et al., 2021)","(Pérez, Gómez y Torres, 2021)","(Pérez y otros, 2021)","(Pérez, 2021)"],a:0,e:"Desde tres autores se usa el primer apellido seguido de “et al.”."},
+{q:"Si copias textualmente una frase de menos de 40 palabras, ¿qué debes hacer?",o:["Ponerla en cursiva sin comillas","Ponerla entre comillas e indicar autor, año y página","Parafrasearla sin citar","Ponerla en un bloque aparte con sangría"],a:1,e:"Las citas textuales cortas van entre comillas, con autor, año y página (p. 15)."},
+{q:"Una cita textual de 40 palabras o más se escribe…",o:["Entre comillas dentro del párrafo","En negritas","En un bloque independiente con sangría y sin comillas","Igual que una cita corta"],a:2,e:"Se llama cita en bloque: aparte, con sangría y sin comillas."},
+{q:"¿Cómo se ordena la lista de referencias al final del trabajo?",o:["Por año de publicación","Por orden de aparición en el texto","Por tipo de fuente","Alfabéticamente por apellido del primer autor"],a:3,e:"La lista de referencias se ordena alfabéticamente."},
+{q:"¿Qué formato de sangría llevan las referencias en la lista?",o:["Sangría francesa (de la segunda línea en adelante)","Sangría en la primera línea","Sin sangría","Centradas"],a:0,e:"APA usa sangría francesa: la primera línea al margen y las siguientes con sangría."},
+{q:"¿Cuál es la referencia de libro con el formato correcto?",o:["Freire, P. (1970). Pedagogía del oprimido. Siglo XXI.","Paulo Freire. 1970. “Pedagogía del oprimido”. Siglo XXI.","Freire, P. (1970). Pedagogía del oprimido (en cursiva). Siglo XXI.","(1970) Freire, Paulo - Pedagogía del oprimido - Siglo XXI"],a:2,e:"Apellido, inicial. (Año). Título en cursiva. Editorial. Es la opción que indica la cursiva en el título."},
+{q:"Si la fuente no tiene fecha de publicación, ¿cómo se cita?",o:["(Autor, sin fecha)","(Autor, s. f.)","(Autor, ?)","(Autor)"],a:1,e:"Se usa “s. f.” (sin fecha): (Autor, s. f.)."},
+{q:"¿Cuál es un ejemplo de cita narrativa?",o:["(Rojas, 2018)","Rojas (2018) afirma que el aprendizaje es social.","[Rojas 2018]","Rojas, 2018, afirma que…"],a:1,e:"En la cita narrativa el autor forma parte de la oración y solo el año va entre paréntesis."}
+];
+const KEY="apa_quiz_v1";
+const app=document.getElementById("app");
+let name="",i=0,ans=[],sel=null;
+
+function load(){try{const v=localStorage.getItem(KEY);return v?JSON.parse(v):null}catch(e){return null}}
+function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+function start(){
+  const prev=load();
+  if(prev){return result(prev,true)}
+  app.innerHTML=`<div class="card"><label for="n"><b>Escribe tu nombre completo</b></label><div style="margin-top:8px"><input type="text" id="n" placeholder="Nombre y apellido" autocomplete="name"></div>
+  <p class="note">Solo puedes contestar una vez. Al terminar verás tu puntaje y las respuestas correctas.</p>
+  <div style="margin-top:14px"><button id="go" disabled>Comenzar</button></div></div>`;
+  const n=document.getElementById("n"),g=document.getElementById("go");
+  n.oninput=()=>{g.disabled=n.value.trim().length<3};
+  g.onclick=()=>{name=n.value.trim();save({name,started:true,done:false});show()};
+}
+function show(){
+  const it=Q[i];sel=null;
+  app.innerHTML=`<div class="card"><div class="bar"><div style="width:${i/Q.length*100}%"></div></div>
+  <p class="note">Pregunta ${i+1} de ${Q.length}</p><p class="q">${esc(it.q)}</p>
+  <div id="opts">${it.o.map((t,k)=>`<button class="opt" data-k="${k}">${esc(t)}</button>`).join("")}</div>
+  <div style="margin-top:16px"><button id="nx" disabled>${i===Q.length-1?"Terminar":"Siguiente"}</button></div></div>`;
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));
+    b.classList.add("sel");sel=+b.dataset.k;document.getElementById("nx").disabled=false});
+  document.getElementById("nx").onclick=()=>{ans.push(sel);i++;i<Q.length?show():finish()};
+}
+function finish(){
+  const score=ans.reduce((s,a,k)=>s+(a===Q[k].a?1:0),0);
+  const d={name,score,total:Q.length,ans,done:true,date:new Date().toLocaleString("es-MX")};
+  save(d);result(d,false);
+}
+function result(d,again){
+  if(!d.done){app.innerHTML=`<div class="card"><p class="q">Ya habías iniciado esta práctica en este dispositivo.</p><p class="note">Solo se permite un intento, así que no se puede reiniciar. Consulta con tu docente.</p></div>`;return}
+  const pct=Math.round(d.score/d.total*100);
+  app.innerHTML=`<div class="card"><p class="note">${again?"Ya realizaste esta práctica. Este es tu resultado:":"¡Terminaste!"}</p>
+  <p style="margin:0"><b>${esc(d.name)}</b></p>
+  <div class="score">${d.score} / ${d.total}</div><p class="sub">${pct}% de aciertos · ${esc(d.date||"")}</p>
+  ${d.ans.map((a,k)=>{const ok=a===Q[k].a;return`<div class="rev"><b>${k+1}. ${esc(Q[k].q)}</b><br>
+  <span class="${ok?"ok":"bad"}">${ok?"✔ Correcto":"✘ Tu respuesta: "+esc(Q[k].o[a])}</span><br>
+  ${ok?"":"Respuesta correcta: "+esc(Q[k].o[Q[k].a])+"<br>"}<span class="note">${esc(Q[k].e)}</span></div>`}).join("")}
+  <p class="note">Tip: toma captura de pantalla de tu resultado para entregarlo a tu docente.</p></div>`;
+}
+start();
+</script>
+</body>
+</html>
